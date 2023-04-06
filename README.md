@@ -14,3 +14,8 @@
 
 ### Stack:
 Servlets, JDBC, JUnit 5, Mockito, Postgresql, H2
+
+### Postman:
+- #### [Author](https://documenter.getpostman.com/view/19073879/2s93RZMA6n)
+- #### [Book](https://documenter.getpostman.com/view/19073879/2s93RZMA6r)
+- #### [Category](https://documenter.getpostman.com/view/19073879/2s93RZMAB9)
