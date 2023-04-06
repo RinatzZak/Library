@@ -5,7 +5,7 @@ import com.library.dao.BookDAO;
 import com.library.dao.impl.BookDAOImpl;
 import com.library.model.Author;
 import com.library.model.Book;
-import com.library.to.BookTo;
+import com.library.dto.BookTo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

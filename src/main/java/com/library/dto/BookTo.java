@@ -1,8 +1,5 @@
-package com.library.to;
+package com.library.dto;
 
-import com.library.model.Author;
-
-import java.util.List;
 import java.util.Objects;
 
 public class BookTo {

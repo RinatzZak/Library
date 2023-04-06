@@ -1,6 +1,4 @@
-package com.library.to;
-
-import java.util.Objects;
+package com.library.dto;
 
 public class CategoryTo {
     private Integer id;

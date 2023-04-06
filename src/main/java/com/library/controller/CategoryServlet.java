@@ -7,7 +7,7 @@ import com.library.dao.impl.BookDAOImpl;
 import com.library.dao.impl.CategoryDAOImpl;
 import com.library.model.Book;
 import com.library.model.Category;
-import com.library.to.CategoryTo;
+import com.library.dto.CategoryTo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -2,7 +2,7 @@ package com.library.controller;
 
 import com.library.model.Book;
 import com.library.model.Category;
-import com.library.to.CategoryTo;
+import com.library.dto.CategoryTo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

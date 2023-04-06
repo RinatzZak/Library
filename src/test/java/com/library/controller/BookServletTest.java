@@ -1,7 +1,7 @@
 package com.library.controller;
 
 import com.library.model.Book;
-import com.library.to.BookTo;
+import com.library.dto.BookTo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

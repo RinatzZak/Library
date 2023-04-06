@@ -28,10 +28,9 @@ public class AuthorDAOImpl implements AuthorDAO {
     public Author getById(int authorId) {
         Author author = null;
 
-        String query = "SELECT name FROM authors WHERE author_id = ?";
-
         try (Connection connection = connector.getConnection();
-             PreparedStatement ps = connection.prepareStatement(query)) {
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT name FROM authors WHERE author_id = ?")) {
             ps.setInt(1, authorId);
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
