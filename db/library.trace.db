@@ -1,0 +1,4 @@
+2023-04-06 15:02:29 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Таблица "AUTHORS" не найдена
+Table "AUTHORS" not found; SQL statement:
+SELECT name FROM authors WHERE author_id = ? [42102-214]
