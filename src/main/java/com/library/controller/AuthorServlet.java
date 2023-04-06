@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.dao.AuthorDAO;
 import com.library.dao.impl.AuthorDAOImpl;
 import com.library.model.Author;
+import com.library.service.AuthorService;
+import com.library.service.impl.AuthorServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,16 +22,16 @@ import java.util.stream.Collectors;
         "/authors/delete", "/authors/all"})
 public class AuthorServlet extends HttpServlet {
 
-    private AuthorDAO authorDAO;
+    private AuthorService authorService;
     private ObjectMapper mapper;
 
     public AuthorServlet() {
-        this.authorDAO = new AuthorDAOImpl();
+        this.authorService = new AuthorServiceImpl();
         this.mapper = new ObjectMapper();
     }
 
-    public AuthorServlet(AuthorDAO authorDAO) {
-        this.authorDAO = authorDAO;
+    public AuthorServlet(AuthorService authorService) {
+        this.authorService = authorService;
         this.mapper = new ObjectMapper();
     }
 
@@ -73,7 +75,7 @@ public class AuthorServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             int authorId = Integer.parseInt(request.getParameter("id"));
-            String authorOfString = mapper.writeValueAsString(authorDAO.getById(authorId));
+            String authorOfString = mapper.writeValueAsString(authorService.get(authorId));
             PrintWriter pw = response.getWriter();
             pw.print(authorOfString);
             pw.close();
@@ -87,12 +89,12 @@ public class AuthorServlet extends HttpServlet {
             request.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            List<Author> authors = authorDAO.getAll();
+            List<Author> authors = authorService.getAll();
             String authorsOfString = mapper.writeValueAsString(authors);
             PrintWriter pw = response.getWriter();
             pw.println(authorsOfString);
             pw.close();
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -101,7 +103,7 @@ public class AuthorServlet extends HttpServlet {
         try {
             request.setCharacterEncoding("UTF-8");
             int authorId = Integer.parseInt(request.getParameter("id"));
-            authorDAO.delete(authorId);
+            authorService.delete(authorId);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,7 +117,7 @@ public class AuthorServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             Author author = mapper.readValue(body, Author.class);
-            authorDAO.add(author);
+            authorService.add(author);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -129,7 +131,7 @@ public class AuthorServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             Author author = mapper.readValue(body, Author.class);
-            authorDAO.update(author);
+            authorService.update(author);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             e.printStackTrace();

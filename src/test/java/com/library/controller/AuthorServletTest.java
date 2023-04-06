@@ -22,7 +22,7 @@ class AuthorServletTest extends AbstractControllerTest {
         List<Author> authorList = new ArrayList<>();
         authorList.add(new Author(1, "Tom"));
         authorList.add(new Author(2, "Jerry"));
-        when(authorDAO.getAll()).thenReturn(authorList);
+        when(authorService.getAll()).thenReturn(authorList);
 
         when(request.getServletPath()).thenReturn("/authors/all");
 
@@ -44,7 +44,7 @@ class AuthorServletTest extends AbstractControllerTest {
 
         authorServlet.doPost(request, response);
 
-        verify(authorDAO).add(created);
+        verify(authorService).add(created);
         verify(response).setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -61,7 +61,7 @@ class AuthorServletTest extends AbstractControllerTest {
 
         authorServlet.doPost(request, response);
 
-        verify(authorDAO).update(updated);
+        verify(authorService).update(updated);
 
         verify(response).setStatus(HttpServletResponse.SC_OK);
     }
@@ -74,7 +74,7 @@ class AuthorServletTest extends AbstractControllerTest {
 
         authorServlet.doGet(request, response);
 
-        verify(authorDAO).delete(1);
+        verify(authorService).delete(1);
 
         verify(response).setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
@@ -82,13 +82,13 @@ class AuthorServletTest extends AbstractControllerTest {
     @Test
     public void testGet() throws ServletException, IOException {
         Author author = new Author(1, "Tolkien");
-        when(authorDAO.getById(1)).thenReturn(author);
+        when(authorService.get(1)).thenReturn(author);
         when(request.getServletPath()).thenReturn("/authors/get");
         when(request.getParameter("id")).thenReturn("1");
 
         authorServlet.doGet(request, response);
 
-        verify(authorDAO).getById(1);
+        verify(authorService).get(1);
 
         Assertions.assertEquals("{\"id\":1,\"name\":\"Tolkien\"}", writer.toString());
     }

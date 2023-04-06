@@ -23,7 +23,7 @@ class CategoryServletTest extends AbstractControllerTest {
         List<Category> categories = new ArrayList<>();
         categories.add(new Category(1, "First"));
         categories.add(new Category(2, "Second"));
-        when(categoryDAO.getAll()).thenReturn(categories);
+        when(categoryService.getAll()).thenReturn(categories);
 
         when(request.getServletPath()).thenReturn("/categories/all");
 
@@ -45,7 +45,7 @@ class CategoryServletTest extends AbstractControllerTest {
 
         categoryServlet.doPost(request, response);
 
-        verify(categoryDAO).add(created);
+        verify(categoryService).add(created);
         verify(response).setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -62,7 +62,7 @@ class CategoryServletTest extends AbstractControllerTest {
 
         categoryServlet.doPost(request, response);
 
-        verify(categoryDAO).update(updated);
+        verify(categoryService).update(updated);
 
         verify(response).setStatus(HttpServletResponse.SC_OK);
     }
@@ -75,7 +75,7 @@ class CategoryServletTest extends AbstractControllerTest {
 
         categoryServlet.doGet(request, response);
 
-        verify(categoryDAO).delete(1);
+        verify(categoryService).delete(1);
 
         verify(response).setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
@@ -83,13 +83,13 @@ class CategoryServletTest extends AbstractControllerTest {
     @Test
     public void testGet() throws ServletException, IOException {
         Category category = new Category(1, "Fantastic");
-        when(categoryDAO.getById(1)).thenReturn(category);
+        when(categoryService.get(1)).thenReturn(category);
         when(request.getServletPath()).thenReturn("/categories/get");
         when(request.getParameter("id")).thenReturn("1");
 
         categoryServlet.doGet(request, response);
 
-        verify(categoryDAO).getById(1);
+        verify(categoryService).get(1);
 
         Assertions.assertEquals("{\"id\":1,\"name\":\"Fantastic\"}", writer.toString());
     }
@@ -116,14 +116,14 @@ class CategoryServletTest extends AbstractControllerTest {
         Category category = new Category(1, "fantastic");
 
         when(request.getReader()).thenReturn(new BufferedReader(reader));
-        when(bookDAO.getById(1)).thenReturn(book);
-        when(categoryDAO.getById(1)).thenReturn(category);
+//        when(bookDAO.getById(1)).thenReturn(book);
+//        when(categoryDAO.getById(1)).thenReturn(category);
         when(request.getReader()).thenReturn(new BufferedReader(reader));
         when(request.getServletPath()).thenReturn("/categories/book/delete");
 
         categoryServlet.doPost(request, response);
 
-        verify(categoryDAO).deleteBookFromCategory(category, book);
+        verify(categoryService).deleteBookFromCategory(created);
     }
 
     @Test
@@ -137,13 +137,13 @@ class CategoryServletTest extends AbstractControllerTest {
         Category category = new Category(1, "fantastic");
 
         when(request.getReader()).thenReturn(new BufferedReader(reader));
-        when(bookDAO.getById(1)).thenReturn(book);
-        when(categoryDAO.getById(1)).thenReturn(category);
+//        when(bookDAO.getById(1)).thenReturn(book);
+//        when(categoryDAO.getById(1)).thenReturn(category);
         when(request.getReader()).thenReturn(new BufferedReader(reader));
         when(request.getServletPath()).thenReturn("/categories/book/add");
 
         categoryServlet.doPost(request, response);
 
-        verify(categoryDAO).addBookToCategory(category, book);
+        verify(categoryService).addBookToCategory(created);
     }
 }

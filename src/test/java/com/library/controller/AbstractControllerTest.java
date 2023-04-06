@@ -1,9 +1,9 @@
 package com.library.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.dao.AuthorDAO;
-import com.library.dao.BookDAO;
-import com.library.dao.CategoryDAO;
+import com.library.service.AuthorService;
+import com.library.service.BookService;
+import com.library.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 
 public class AbstractControllerTest {
 
-    protected AuthorDAO authorDAO;
-    protected BookDAO bookDAO;
-    protected CategoryDAO categoryDAO;
+    protected AuthorService authorService;
+    protected BookService bookService;
+    protected CategoryService categoryService;
     protected AuthorServlet authorServlet;
     protected BookServlet bookServlet;
     protected CategoryServlet categoryServlet;
@@ -31,12 +31,12 @@ public class AbstractControllerTest {
 
     @BeforeEach
     public void setUp() throws IOException {
-        authorDAO = mock(AuthorDAO.class);
-        bookDAO = mock(BookDAO.class);
-        categoryDAO = mock(CategoryDAO.class);
-        authorServlet = new AuthorServlet(authorDAO);
-        bookServlet = new BookServlet(bookDAO);
-        categoryServlet = new CategoryServlet(categoryDAO, bookDAO);
+        authorService = mock(AuthorService.class);
+        bookService = mock(BookService.class);
+        categoryService = mock(CategoryService.class);
+        authorServlet = new AuthorServlet(authorService);
+        bookServlet = new BookServlet(bookService);
+        categoryServlet = new CategoryServlet(categoryService);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         writer = new StringWriter();

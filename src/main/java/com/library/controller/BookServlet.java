@@ -2,10 +2,11 @@ package com.library.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.dao.BookDAO;
-import com.library.dao.impl.BookDAOImpl;
 import com.library.model.Author;
 import com.library.model.Book;
 import com.library.dto.BookTo;
+import com.library.service.BookService;
+import com.library.service.impl.BookServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,16 +22,16 @@ import java.util.stream.Collectors;
         "/books/delete", "/books/all"})
 public class BookServlet extends HttpServlet {
 
-    private BookDAO bookDAO;
+    private BookService service;
     private ObjectMapper mapper;
 
     public BookServlet() {
-        this.bookDAO = new BookDAOImpl();
+        this.service = new BookServiceImpl();
         this.mapper = new ObjectMapper();
     }
 
-    public BookServlet(BookDAO bookDAO) {
-        this.bookDAO = bookDAO;
+    public BookServlet(BookService service) {
+        this.service = service;
         this.mapper = new ObjectMapper();
     }
 
@@ -74,7 +75,7 @@ public class BookServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             int bookId = Integer.parseInt(request.getParameter("id"));
-            String book = mapper.writeValueAsString(bookDAO.getById(bookId));
+            String book = mapper.writeValueAsString(service.get(bookId));
             PrintWriter pw = response.getWriter();
             pw.print(book);
             pw.close();
@@ -88,7 +89,7 @@ public class BookServlet extends HttpServlet {
             request.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            List<Book> books = bookDAO.getAll();
+            List<Book> books = service.getAll();
             String booksOfString = mapper.writeValueAsString(books);
             PrintWriter pw = response.getWriter();
             pw.println(booksOfString);
@@ -102,7 +103,7 @@ public class BookServlet extends HttpServlet {
         try {
             request.setCharacterEncoding("UTF-8");
             int bookId = Integer.parseInt(request.getParameter("id"));
-            bookDAO.delete(bookId);
+            service.delete(bookId);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,9 +117,7 @@ public class BookServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             BookTo bookTo = mapper.readValue(body, BookTo.class);
-            Book book = new Book();
-            book.setName(bookTo.getName());
-            bookDAO.add(book);
+            service.add(bookTo);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,11 +131,7 @@ public class BookServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             BookTo bookTo = mapper.readValue(body, BookTo.class);
-            Book book = new Book();
-            book.setId(bookTo.getId());
-            book.setName(bookTo.getName());
-            book.setAuthor(new Author(bookTo.getAuthor_id(), null));
-            bookDAO.update(book);
+            service.update(bookTo);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             e.printStackTrace();

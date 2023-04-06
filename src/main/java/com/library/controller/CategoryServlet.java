@@ -8,6 +8,10 @@ import com.library.dao.impl.CategoryDAOImpl;
 import com.library.model.Book;
 import com.library.model.Category;
 import com.library.dto.CategoryTo;
+import com.library.service.BookService;
+import com.library.service.CategoryService;
+import com.library.service.impl.BookServiceImpl;
+import com.library.service.impl.CategoryServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,19 +27,16 @@ import java.util.stream.Collectors;
         "/categories/delete", "/categories/all", "/categories/book/delete", "/categories/book/add"})
 public class CategoryServlet extends HttpServlet {
 
-    private CategoryDAO categoryDAO;
-    private BookDAO bookDAO;
+    private CategoryService categoryService;
     private ObjectMapper mapper;
 
     public CategoryServlet() {
-        this.bookDAO = new BookDAOImpl();
-        this.categoryDAO = new CategoryDAOImpl();
+        this.categoryService = new CategoryServiceImpl();
         this.mapper = new ObjectMapper();
     }
 
-    public CategoryServlet(CategoryDAO categoryDAO, BookDAO bookDAO) {
-        this.bookDAO = bookDAO;
-        this.categoryDAO = categoryDAO;
+    public CategoryServlet(CategoryService categoryService) {
+        this.categoryService = categoryService;
         this.mapper = new ObjectMapper();
     }
 
@@ -85,7 +86,7 @@ public class CategoryServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             Category category = mapper.readValue(body, Category.class);
-            categoryDAO.update(category);
+            categoryService.update(category);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,7 +100,7 @@ public class CategoryServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             Category category = mapper.readValue(body, Category.class);
-            categoryDAO.add(category);
+            categoryService.add(category);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,7 +113,7 @@ public class CategoryServlet extends HttpServlet {
             request.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            List<Category> categories = categoryDAO.getAll();
+            List<Category> categories = categoryService.getAll();
             String categoriesOfString = mapper.writeValueAsString(categories);
             PrintWriter pw = response.getWriter();
             pw.println(categoriesOfString);
@@ -126,7 +127,7 @@ public class CategoryServlet extends HttpServlet {
         try {
             request.setCharacterEncoding("UTF-8");
             int categoryId = Integer.parseInt(request.getParameter("id"));
-            categoryDAO.delete(categoryId);
+            categoryService.delete(categoryId);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (IOException e) {
             e.printStackTrace();
@@ -140,7 +141,7 @@ public class CategoryServlet extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             int categoryId = Integer.parseInt(request.getParameter("id"));
-            String category = mapper.writeValueAsString(categoryDAO.getById(categoryId));
+            String category = mapper.writeValueAsString(categoryService.get(categoryId));
             PrintWriter pw = response.getWriter();
             pw.print(category);
             pw.close();
@@ -155,9 +156,7 @@ public class CategoryServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             CategoryTo categoryTo = mapper.readValue(body, CategoryTo.class);
-            Category category = categoryDAO.getById(categoryTo.getId());
-            Book book = bookDAO.getById(categoryTo.getBookId());
-            categoryDAO.deleteBookFromCategory(category, book);
+            categoryService.deleteBookFromCategory(categoryTo);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -170,9 +169,7 @@ public class CategoryServlet extends HttpServlet {
             response.setCharacterEncoding("UTF-8");
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             CategoryTo categoryTo = mapper.readValue(body, CategoryTo.class);
-            Category category = categoryDAO.getById(categoryTo.getId());
-            Book book = bookDAO.getById(categoryTo.getBookId());
-            categoryDAO.addBookToCategory(category, book);
+            categoryService.addBookToCategory(categoryTo);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException();

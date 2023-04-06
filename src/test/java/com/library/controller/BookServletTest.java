@@ -23,7 +23,7 @@ class BookServletTest extends AbstractControllerTest {
         books.add(new Book(1, "New"));
         books.add(new Book(2, "Up"));
 
-        when(bookDAO.getAll()).thenReturn(books);
+        when(bookService.getAll()).thenReturn(books);
 
         when(request.getServletPath()).thenReturn("/books/all");
 
@@ -34,39 +34,39 @@ class BookServletTest extends AbstractControllerTest {
 
     @Test
     public void testAdd() throws ServletException, IOException {
-        BookTo created = new BookTo();
+        BookTo created = new BookTo(1, "New", 3);
         created.setName("New");
         String body = mapper.writeValueAsString(created);
         StringReader reader = new StringReader(body);
-        Book book = new Book();
-        book.setName(created.getName());
+//        Book book = new Book();
+//        book.setName(created.getName());
 
         when(request.getReader()).thenReturn(new BufferedReader(reader));
         when(request.getServletPath()).thenReturn("/books/add");
 
         bookServlet.doPost(request, response);
 
-        verify(bookDAO).add(book);
+        verify(bookService).add(created);
         verify(response).setStatus(HttpServletResponse.SC_OK);
     }
 
     @Test
     public void testUpdate() throws ServletException, IOException {
-        BookTo created = new BookTo(1, "New", 3);
+        BookTo created = new BookTo(1, "Book", 3);
         created.setName("New2");
         String body = mapper.writeValueAsString(created);
         StringReader reader = new StringReader(body);
-        Book book = new Book();
-        book.setId(created.getId());
-        book.setName(created.getName());
-        book.setAuthor(authorDAO.getById(3));
+//        Book book = new Book();
+//        book.setId(created.getId());
+//        book.setName(created.getName());
+//        book.setAuthor(authorDAO.getById(3));
 
         when(request.getReader()).thenReturn(new BufferedReader(reader));
         when(request.getServletPath()).thenReturn("/books/update");
 
         bookServlet.doPost(request, response);
 
-        verify(bookDAO).update(book);
+        verify(bookService).update(created);
         verify(response).setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -78,7 +78,7 @@ class BookServletTest extends AbstractControllerTest {
 
         bookServlet.doGet(request, response);
 
-        verify(bookDAO).delete(1);
+        verify(bookService).delete(1);
 
         verify(response).setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
@@ -86,13 +86,13 @@ class BookServletTest extends AbstractControllerTest {
     @Test
     public void testGet() throws ServletException, IOException {
         Book book = new Book(1, "New");
-        when(bookDAO.getById(1)).thenReturn(book);
+        when(bookService.get(1)).thenReturn(book);
         when(request.getServletPath()).thenReturn("/books/get");
         when(request.getParameter("id")).thenReturn("1");
 
         bookServlet.doGet(request, response);
 
-        verify(bookDAO).getById(1);
+        verify(bookService).get(1);
 
         Assertions.assertEquals("{\"id\":1,\"name\":\"New\"}", writer.toString());
     }
